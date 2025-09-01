@@ -134,10 +134,10 @@ export default function Home() {
   }
 
   return (
-    <div className={`px-5 py-10 bg-gradient-to-br from-indigo-500 to-purple-600 ${emailSummary?.summary || error ? 'h-full' : 'h-screen'}`}>
-      <div className="max-w-4xl mx-auto my-0">
+    <div className={`flex flex-col justify-center px-5 py-10 bg-gradient-to-br from-indigo-500 to-purple-600 ${emailSummary?.summary || error ? 'h-full' : 'h-screen'}`}>
+      <div className=" max-w-4xl mx-auto my-0">
         {/* Header */}
-        <div className="mb-10 text-center bg-white p-7 rounded-3xl shadow-2xl animate-fade-in-up">
+        <div className="sm:w-230 mb-10 text-center bg-white p-7 rounded-3xl shadow-2xl animate-fade-in-up">
           <div className="max-sm:text-3xl text-5xl mb-4">
             📧
           </div>
@@ -163,7 +163,7 @@ export default function Home() {
         </div>
 
         {/* Main Action Card */}
-        <div className="max-sm:text-xl text-center mb-10 bg-white rounded-3xl px-10 py-12.5 shadow-2xl animate-fade-in-up-delay-200">
+        <div className="s:w-230 max-sm:text-xl text-center  bg-white rounded-3xl px-10 py-12.5 shadow-2xl animate-fade-in-up-delay-200">
           <div className="mb-7.5">
             <h2 className="max-sm:text-xl text-3xl font-bold text-gray-800 mb-2.5">
               Daily Email Intelligence
