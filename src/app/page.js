@@ -144,7 +144,7 @@ export default function Home() {
           <h1 className="max-sm:text-xl mb-2.5 text-3xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
             DigiMail Dashboard
           </h1>
-          <div className="flex items-center justify-center scale-150 my-4">
+          <div className="max-sm:scale-100 flex items-center justify-center scale-150 my-4">
             
             <Avatar>
               <AvatarImage src = {session?.user?.image} />
