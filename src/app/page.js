@@ -55,7 +55,7 @@ export default function Home() {
     // Call Gemini API directly here
     const prompt = `Please provide a concise summary of today's emails (${today}). Focus on important information, action items, and key points. Group similar topics together and highlight any urgent matters:\n\n${JSON.stringify(emailsForAnalysis, null, 2)}`;
 
-    const geminiResponse = await fetch('https://digimail-umber.vercel.app/api/gemini', {
+    const geminiResponse = await fetch('http://localhost:3000/api/gemini', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt })
@@ -138,10 +138,10 @@ export default function Home() {
       <div className="max-w-4xl mx-auto my-0">
         {/* Header */}
         <div className="mb-10 text-center bg-white p-7 rounded-3xl shadow-2xl animate-fade-in-up">
-          <div className="text-5xl mb-4">
+          <div className="max-sm:text-3xl text-5xl mb-4">
             📧
           </div>
-          <h1 className="mb-2.5 text-3xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="max-sm:text-xl mb-2.5 text-3xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
             DigiMail Dashboard
           </h1>
           <div className="flex items-center justify-center scale-150 my-4">
@@ -163,12 +163,12 @@ export default function Home() {
         </div>
 
         {/* Main Action Card */}
-        <div className="text-center mb-10 bg-white rounded-3xl px-10 py-12.5 shadow-2xl animate-fade-in-up-delay-200">
+        <div className="max-sm:text-xl text-center mb-10 bg-white rounded-3xl px-10 py-12.5 shadow-2xl animate-fade-in-up-delay-200">
           <div className="mb-7.5">
-            <h2 className="text-3xl font-bold text-gray-800 mb-2.5">
+            <h2 className="max-sm:text-xl text-3xl font-bold text-gray-800 mb-2.5">
               Daily Email Intelligence
             </h2>
-            <p className="text-gray-500 m-0 text-l">
+            <p className="max-sm:text-md text-gray-500 m-0 text-l">
               Get instant insights from today's emails powered by advanced AI
             </p>
           </div>
@@ -176,7 +176,7 @@ export default function Home() {
           <button
             onClick={summarizeTodaysEmails}
             disabled={isFetching}
-            className={`${isFetching ? 'hidden' : null} px-10 py-5 font-bold text-lg text-white border-none rounded-lg min-w-[280px] transition-transform duration-300 ease-in ${isFetching
+            className={`${isFetching ? 'hidden' : null} max-sm:text-md px-10 py-5 font-bold text-lg text-white border-none rounded-lg min-w-[280px] transition-transform duration-300 ease-in ${isFetching
               ? 'cursor-not-allowed'
               : 'bg-gradient-to-br from-green-400 to-green-500 cursor-pointer shadow-lg shadow-green-400/40 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-green-400/50'
               }`}
@@ -200,7 +200,7 @@ export default function Home() {
               {emailSummary.summary}
             </div>
             <div className="flex gap-3">
-              <button className="bg-[#F40F02] text-white rounded-md mt-3 px-3 h-[40px] cursor-pointer hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2" onClick={downloadPdf}>
+              <button className="max-sm:text-sm bg-[#F40F02] text-white rounded-md mt-3 px-3 h-[40px] cursor-pointer hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2" onClick={downloadPdf}>
                 Download as PDF
                 <FontAwesomeIcon className="text-xl" icon={faFilePdf} />
               </button>
