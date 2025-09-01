@@ -139,6 +139,15 @@ export const authOptions = {
       return true;
     },
     async redirect({ url, baseUrl }) {
+      // Allow any URL that starts with the base URL
+      if (url.startsWith(baseUrl)) {
+        return url;
+      }
+      // For relative URLs, prepend the base URL
+      if (url.startsWith('/')) {
+        return `${baseUrl}${url}`;
+      }
+      // Default to base URL for safety
       return baseUrl;
     },
   },
