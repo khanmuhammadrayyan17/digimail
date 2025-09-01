@@ -46,6 +46,14 @@ async function refreshAccessToken(token) {
   }
 }
 
+// Debug logging for Vercel deployment
+console.log('=== NextAuth Debug Info ===');
+console.log('NEXTAUTH_URL:', process.env.NEXTAUTH_URL);
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? 'Set' : 'Missing');
+console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET ? 'Set' : 'Missing');
+console.log('===========================');
+
 export const authOptions = {
   providers: [
     GoogleProvider({
@@ -139,15 +147,6 @@ export const authOptions = {
       return true;
     },
     async redirect({ url, baseUrl }) {
-      // Allow any URL that starts with the base URL
-      if (url.startsWith(baseUrl)) {
-        return url;
-      }
-      // For relative URLs, prepend the base URL
-      if (url.startsWith('/')) {
-        return `${baseUrl}${url}`;
-      }
-      // Default to base URL for safety
       return baseUrl;
     },
   },
