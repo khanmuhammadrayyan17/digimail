@@ -55,7 +55,7 @@ export default function Home() {
     // Call Gemini API directly here
     const prompt = `Please provide a concise summary of today's emails (${today}). Focus on important information, action items, and key points. Group similar topics together and highlight any urgent matters:\n\n${JSON.stringify(emailsForAnalysis, null, 2)}`;
 
-    const geminiResponse = await fetch('http://localhost:3000/api/gemini', {
+    const geminiResponse = await fetch('/api/gemini', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt })
