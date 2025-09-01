@@ -163,7 +163,7 @@ export default function Home() {
         </div>
 
         {/* Main Action Card */}
-        <div className="s:w-230 max-sm:text-xl text-center  bg-white rounded-3xl px-10 py-12.5 shadow-2xl animate-fade-in-up-delay-200">
+        <div className="sm:w-230 max-sm:text-xl text-center  bg-white rounded-3xl px-10 py-12.5 shadow-2xl animate-fade-in-up-delay-200">
           <div className="mb-7.5">
             <h2 className="max-sm:text-xl text-3xl font-bold text-gray-800 mb-2.5">
               Daily Email Intelligence
