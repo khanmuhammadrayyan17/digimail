@@ -151,6 +151,22 @@ export default function Home() {
           <p className="mb-5 text-gray-600 text-xl">
             Welcome back, {session.user.name}! 👋
           </p>
+          {session.user.email === 'maryamsajid283@gmail.com' && 
+              (<div className="font-bold text-4xl m-4">
+                <p>💖💖💖Hi Babyyy💖💖💖</p>
+                <p>Thankyou for testing the application 💋 💋 💋 💋 💋 </p>
+                Some Roses for you too 🌹🌹🌹🌹🌹
+              </div>
+              )
+            } 
+            {session.user.email === 'khanmuhammadrayyan17@gmail.com' && 
+              (<div className="font-bold text-4xl m-4">
+                <p>💖💖💖Hi Babyyy💖💖💖</p>
+                <p>Thankyou for testing the application 💋 💋 💋 💋 💋 </p>
+                Some Roses for you too 🌹🌹🌹🌹🌹
+              </div>
+              )
+            }      
           <button
             onClick={() => signOut({ callbackUrl: '/signin' })}
             className="px-5 py-2.5 bg-red-400 text-white border-none rounded-lg cursor-pointer hover:bg-red-500 text-md font-medium transition-all duration-300 ease-in shadow-md shadow-red-400/30"
