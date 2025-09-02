@@ -226,7 +226,7 @@ export default function Home() {
                 Today's Emails ({emailSummary.emails.length})
               </h3>
             </div>
-            <div className="w-[90%] max-h-96 overflow-y-auto pr-2.5 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
+            <div className="w-[95%] max-h-96 overflow-y-auto pr-2.5 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
               {emailSummary.emails.map((email, index) => (
                 <div
                   key={email.id}
