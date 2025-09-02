@@ -135,14 +135,14 @@ export default function Home() {
   return (
     <div className={`w-screen flex flex-col justify-center items-center px-4 py-10 bg-gradient-to-br from-indigo-500 to-purple-600 ${emailSummary?.summary || error ? 'h-full' : 'h-screen'}`}>
       <div className="max-w-4xl mx-auto  my-0">
-        <div className=" mb-10 text-center bg-white p-7 rounded-3xl shadow-2xl animate-fade-in-up">
+        <div className=" mb-7.5 text-center bg-white p-7 rounded-3xl shadow-2xl animate-fade-in-up">
           <div className=" max-sm:text-3xl text-5xl mb-4">
             📧
           </div>
-          <h1 className="max-sm:text-xl mb-2.5 text-3xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="lg:w-[840px] p-1 max-sm:text-xl mb-1.5 text-3xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
             DigiMail Dashboard
           </h1>
-          <div className="flex items-center justify-center my-4">
+          <div className="flex items-center justify-center my-6">
             <Avatar className='scale-150'>
               <AvatarImage src={session?.user?.image} />
               <AvatarFallback>N.A</AvatarFallback>
@@ -236,7 +236,7 @@ export default function Home() {
                   <div className="font-semibold mb-2.5 text-gray-800 text-base">
                     {email.subject}
                   </div>
-                  <div className="text-sm text-gray-500 mb-2 flex items-center">
+                  <div className="text-sm text-gray-500 mb-2 flex items-center text-wrap">
                     <span className="mr-2">👤</span>
                     <strong>From:</strong>&nbsp;{email.from}
                   </div>
