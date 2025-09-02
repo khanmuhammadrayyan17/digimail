@@ -142,24 +142,24 @@ export default function Home() {
           <h1 className="lg:w-[840px] p-1 max-sm:text-xl mb-1.5 text-3xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
             DigiMail Dashboard
           </h1>
-          <div className="flex items-center justify-center my-6">
+          <div className="flex items-center justify-center my-3">
             <Avatar className='scale-150'>
               <AvatarImage src={session?.user?.image} />
               <AvatarFallback>N.A</AvatarFallback>
             </Avatar>
           </div>
-          <p className="mb-5 text-gray-600 text-xl">
+          <p className="mb-1 text-gray-600 text-xl">
             Welcome back, {session.user.name}! 👋
           </p>
           {session.user.email === 'maryamsajid283@gmail.com' && 
-              (<div className="font-bold text-xl m-4">
+              (<div className="font-bold text-xl m-1">
                 <p>💖💖💖Hi Babyyy💖💖💖</p>
                 Some Roses for you too 🌹🌹🌹🌹🌹
               </div>
               )
             } 
             {session.user.email === 'khanmuhammadrayyan17@gmail.com' && 
-              (<div className="font-bold text-xl m-4">
+              (<div className="font-bold text-xl m-1">
                 <p>💖💖💖Hi Babyyy💖💖💖</p>
                 Some Roses for you too 🌹🌹🌹🌹🌹
               </div>
@@ -167,7 +167,7 @@ export default function Home() {
             }      
           <button
             onClick={() => signOut({ callbackUrl: '/signin' })}
-            className="px-5 py-2.5 bg-red-400 text-white border-none rounded-lg cursor-pointer hover:bg-red-500 text-md font-medium transition-all duration-300 ease-in shadow-md shadow-red-400/30"
+            className="mt-1 px-5 py-2.5 bg-red-400 text-white border-none rounded-lg cursor-pointer hover:bg-red-500 text-md font-medium transition-all duration-300 ease-in shadow-md shadow-red-400/30"
           >
             Sign Out
           </button>
