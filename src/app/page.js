@@ -35,7 +35,7 @@ export default function Home() {
     refetchInterval: 50000
   })
 
-  // Combined function that fetches emails and gets AI summary
+  
   const fetchAndSummarizeEmails = async () => {
     const today = new Date().toISOString().split('T')[0];
     const emailsData = emails.messages || [];
@@ -44,7 +44,7 @@ export default function Home() {
       throw new Error(`No emails found for today (${today}). Your inbox might be empty or all emails are from previous days.`);
     }
 
-    // Format emails for AI analysis
+    
     const emailsForAnalysis = emailsData.map(email => ({
       subject: email.subject,
       from: email.from,
@@ -52,7 +52,7 @@ export default function Home() {
       date: email.date
     }));
 
-    // Call Gemini API directly here
+    
     const prompt = `Please provide a concise summary of today's emails (${today}). Focus on important information, action items, and key points. Group similar topics together and highlight any urgent matters:\n\n${JSON.stringify(emailsForAnalysis, null, 2)}`;
 
     const geminiResponse = await fetch('/api/gemini', {
@@ -73,14 +73,14 @@ export default function Home() {
     };
   };
 
-  // New useQuery for the complete flow
+  
   const { data: emailSummary, isLoading, isFetching, error, refetch } = useQuery({
-    queryKey: ['email-summary'], // No dependency since we're using manual trigger
+    queryKey: ['email-summary'], 
     queryFn: fetchAndSummarizeEmails,
-    enabled: false // Manual trigger
+    enabled: false 
   });
 
-  // Simple function to trigger the email summary
+  
   const summarizeTodaysEmails = () => {
     refetch();
   };
@@ -97,11 +97,11 @@ export default function Home() {
     const pageHeight = doc.internal.pageSize.height;
     const margins = { top: 20, left: 20, right: 20, bottom: 20 };
 
-    // Centered title
+    
     doc.setFontSize(16);
     doc.text('Email Summary', pageWidth / 2, margins.top, { align: 'center' });
 
-    // Content with proper wrapping and page breaks
+    
     doc.setFontSize(12);
     const splitText = doc.splitTextToSize(emailSummary?.summary || '', pageWidth - margins.left - margins.right);
 
@@ -122,7 +122,6 @@ export default function Home() {
 
 
 
-  // Authentication check
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/signin");
@@ -135,10 +134,9 @@ export default function Home() {
 
   return (
     <div className={`w-screen flex flex-col justify-center items-center px-4 py-10 bg-gradient-to-br from-indigo-500 to-purple-600 ${emailSummary?.summary || error ? 'h-full' : 'h-screen'}`}>
-      <div className="max-w-4xl mx-auto my-0">
-        {/* Header */}
-        <div className="sm:w-230 mb-10 text-center bg-white p-7 rounded-3xl shadow-2xl animate-fade-in-up">
-          <div className="max-sm:text-3xl text-5xl mb-4">
+      <div className="max-w-4xl mx-auto  my-0">
+        <div className=" mb-10 text-center bg-white p-7 rounded-3xl shadow-2xl animate-fade-in-up">
+          <div className=" max-sm:text-3xl text-5xl mb-4">
             📧
           </div>
           <h1 className="max-sm:text-xl mb-2.5 text-3xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
@@ -146,7 +144,7 @@ export default function Home() {
           </h1>
           <div className="flex items-center justify-center my-4">
             <Avatar className='scale-150'>
-              <AvatarImage src = {session?.user?.image} />
+              <AvatarImage src={session?.user?.image} />
               <AvatarFallback>N.A</AvatarFallback>
             </Avatar>
           </div>
@@ -161,8 +159,7 @@ export default function Home() {
           </button>
         </div>
 
-        {/* Main Action Card */}
-        <div className="sm:w-230 max-sm:text-xl text-center  bg-white rounded-3xl px-10 py-12.5 shadow-2xl animate-fade-in-up-delay-200">
+        <div className=" max-sm:text-xl text-center  bg-white rounded-3xl px-10 py-12.5 shadow-2xl animate-fade-in-up-delay-200">
           <div className="mb-7.5">
             <h2 className="max-sm:text-xl text-3xl font-bold text-gray-800 mb-2.5">
               Daily Email Intelligence
@@ -186,19 +183,18 @@ export default function Home() {
           </div>
         </div>
 
-        {/* AI Summary Results */}
         {emailSummary?.summary && (
-          <div className="mt-7.5 bg-white rounded-2xl p-7.5 shadow-2xl animate-fade-in-up-delay-400">
-            <div className="flex items-center mb-5">
-              <span className="text-2xl mr-3">🤖</span>
-              <h3 className="m-0 text-gray-800 text-xl font-semibold">
+          <div className=" flex flex-col items-center mt-7.5 bg-white rounded-2xl px-0.5 py-7 shadow-2xl animate-fade-in-up-delay-400">
+            <div className="w-[90%] flex items-center mb-5">
+              <span className="text-xl mr-3">🤖</span>
+              <h3 className="m-0 text-gray-800 text-md font-semibold">
                 Today's Email Summary
               </h3>
             </div>
-            <div className="whitespace-pre-wrap leading-7 text-gray-600 text-base bg-gray-50 p-6 rounded-xl border border-gray-200">
+            <div className="w-[90%] self-center  whitespace-pre-wrap leading-7 text-gray-600 text-base bg-gray-50 p-1 rounded-xl border border-gray-200">
               {emailSummary.summary}
             </div>
-            <div className="flex gap-3">
+            <div className="w-[90%] flex gap-3">
               <button className="max-sm:text-sm bg-[#F40F02] text-white rounded-md mt-3 px-3 h-[40px] cursor-pointer hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2" onClick={downloadPdf}>
                 Download as PDF
                 <FontAwesomeIcon className="text-xl" icon={faFilePdf} />
@@ -208,7 +204,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* Error Display */}
         {error && (
           <div className="mt-7.5 bg-red-50 border border-red-200 rounded-2xl p-7.5 shadow-2xl">
             <div className="flex items-center mb-5">
@@ -223,16 +218,15 @@ export default function Home() {
           </div>
         )}
 
-        {/* Email List */}
         {emailSummary?.emails && emailSummary.emails.length > 0 && emailSummary.summary && (
-          <div className="mt-7.5 bg-white rounded-2xl p-7.5 shadow-2xl animate-fade-in-up-delay-600">
-            <div className="flex items-center mb-6">
+          <div className=" flex flex-col items-center mt-7.5 bg-white rounded-2xl px-0.5 py-7 shadow-2xl animate-fade-in-up-delay-600">
+            <div className="w-[90%] flex items-center mb-6">
               <span className="text-2xl mr-3">📨</span>
               <h3 className="m-0 text-gray-800 text-xl font-semibold">
                 Today's Emails ({emailSummary.emails.length})
               </h3>
             </div>
-            <div className="max-h-96 overflow-y-auto pr-2.5 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
+            <div className="w-[90%] max-h-96 overflow-y-auto pr-2.5 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
               {emailSummary.emails.map((email, index) => (
                 <div
                   key={email.id}
