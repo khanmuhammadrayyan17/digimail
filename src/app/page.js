@@ -157,14 +157,7 @@ export default function Home() {
                 Some Roses for you too 🌹🌹🌹🌹🌹
               </div>
               )
-            } 
-            {session.user.email === 'khanmuhammadrayyan17@gmail.com' && 
-              (<div className="font-bold text-xl m-1">
-                <p>💖💖💖Hi Babyyy💖💖💖</p>
-                Some Roses for you too 🌹🌹🌹🌹🌹
-              </div>
-              )
-            }      
+            }     
           <button
             onClick={() => signOut({ callbackUrl: '/signin' })}
             className="mt-1 px-5 py-2.5 bg-red-400 text-white border-none rounded-lg cursor-pointer hover:bg-red-500 text-md font-medium transition-all duration-300 ease-in shadow-md shadow-red-400/30"
