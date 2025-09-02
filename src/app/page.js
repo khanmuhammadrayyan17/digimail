@@ -152,9 +152,8 @@ export default function Home() {
             Welcome back, {session.user.name}! 👋
           </p>
           {session.user.email === 'maryamsajid283@gmail.com' && 
-              (<div className="font-bold text-4xl m-4">
+              (<div className="font-bold text-2xl m-4">
                 <p>💖💖💖Hi Babyyy💖💖💖</p>
-                <p>Thankyou for testing the application 💋 💋 💋 💋 💋 </p>
                 Some Roses for you too 🌹🌹🌹🌹🌹
               </div>
               )
