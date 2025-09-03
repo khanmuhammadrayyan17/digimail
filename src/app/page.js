@@ -133,7 +133,7 @@ export default function Home() {
   }
 
   return (
-    <div className={`w-screen flex flex-col justify-center items-center px-4 py-10 bg-gradient-to-br from-indigo-500 to-purple-600 ${emailSummary?.summary || error ? 'h-full' : 'h-screen'}`}>
+    <div className={`w-screen flex flex-col justify-center items-center px-4 py-10 bg-gradient-to-br from-indigo-500 to-purple-600 ${emailSummary?.summary? 'h-full' : 'h-screen'}`}>
       <div className="max-w-4xl mx-auto  my-0">
         <div className=" mb-7.5 text-center bg-white p-7 rounded-3xl shadow-2xl animate-fade-in-up">
           <div className=" max-sm:text-3xl text-5xl mb-4">
@@ -226,7 +226,7 @@ export default function Home() {
         )}
 
         {emailSummary?.emails && emailSummary.emails.length > 0 && emailSummary.summary && (
-          <div className=" flex flex-col items-center mt-7.5 bg-white rounded-2xl px-0.5 py-7 shadow-2xl animate-fade-in-up-delay-600">
+          <div className="max-sm:w-[360px] flex flex-col items-center mt-7.5 bg-white rounded-2xl px-0.5 py-7 shadow-2xl animate-fade-in-up-delay-600">
             <div className="w-[90%] flex items-center mb-6">
               <span className="text-2xl mr-3">📨</span>
               <h3 className="m-0 text-gray-800 text-xl font-semibold">
