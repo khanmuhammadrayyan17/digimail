@@ -233,11 +233,11 @@ export default function Home() {
                 Today's Emails ({emailSummary.emails.length})
               </h3>
             </div>
-            <div className="w-[100%] max-h-96 overflow-y-auto pr-2.5 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
+            <div className="w-[100%] max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
               {emailSummary.emails.map((email, index) => (
                 <div
                   key={email.id}
-                  className="p-5 m-4 border border-gray-200 rounded-xl bg-gray-50 shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:bg-white animate-fade-in-up"
+                  className="p-2.5 m-2 border border-gray-200 rounded-xl bg-gray-50 shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:bg-white animate-fade-in-up"
                   style={{ animationDelay: `${0.8 + index * 0.1}s` }}
                 >
                   <div className="font-semibold mb-2.5 text-gray-800 text-base">
