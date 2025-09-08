@@ -1,4 +1,4 @@
-# DigiMail 📧
+# DigiMail 📧   https://digimail-umber.vercel.app/
 
 A modern email management application built with Next.js that integrates with Gmail API and AI-powered features using Google's Gemini AI. DigiMail allows users to securely access their Gmail inbox, view emails, and leverage AI capabilities for email analysis and management.
 
