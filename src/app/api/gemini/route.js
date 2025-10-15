@@ -25,7 +25,7 @@ export async function POST(req) {
     let model;
     try {
       model = genAI.getGenerativeModel({
-        model: 'models/gemini-1.5-flash-latest',
+        model: 'gemini-1.5-flash-latest',
       });
     } catch (error) {
       console.error('Error initializing model:', error);
