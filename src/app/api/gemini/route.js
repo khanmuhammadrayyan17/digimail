@@ -7,6 +7,7 @@ if (!apiKey) {
   throw new Error('GEMINI_API_KEY is not configured in environment variables');
 }
 
+export const dynamic = 'force-dynamic';
 // Explicitly set API version to v1
 const genAI = new GoogleGenerativeAI(apiKey)
 
