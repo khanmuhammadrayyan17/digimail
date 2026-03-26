@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 
 export async function GET(request) {
   try {
@@ -49,7 +49,7 @@ export async function GET(request) {
     // Fetch detailed information for each message
     const emailPromises = messagesData.messages.map(async (message) => {
       const emailResponse = await fetch(
-        `https://gmail.googleapis.com/gmail/v1/users/me/messages/${message.id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date&metadataHeaders=Message-ID&metadataHeaders=References`,
+        `https://gmail.googleapis.com/gmail/v1/users/me/messages/${message.id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`,
         {
           headers: {
             'Authorization': `Bearer ${session.accessToken}`,
