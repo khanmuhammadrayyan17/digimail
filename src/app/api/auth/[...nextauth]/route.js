@@ -64,7 +64,7 @@ export const authOptions = {
           prompt: "consent",
           access_type: "offline",
           response_type: "code",
-          scope: "openid email profile https://www.googleapis.com/auth/gmail.readonly"
+          scope: "openid email profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.compose"
         }
       }
     }),
@@ -78,9 +78,7 @@ export const authOptions = {
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        // iOS Safari specific settings
-        domain: process.env.NODE_ENV === 'production' ? undefined : undefined // Let browser handle domain
+        secure: process.env.NODE_ENV === 'production'
       }
     },
     callbackUrl: {

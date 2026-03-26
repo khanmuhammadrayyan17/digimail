@@ -3,252 +3,110 @@ import { signIn } from "next-auth/react";
 
 export default function SignIn() {
   return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col justify-center items-center px-4">
-        <style jsx>{`
-          .gsi-material-button {
-            -moz-user-select: none;
-            -webkit-user-select: none;
-            -ms-user-select: none;
-            -webkit-appearance: none;
-            background-color: WHITE;
-            background-image: none;
-            border: 1px solid #dadce0;
-            -webkit-border-radius: 8px;
-            border-radius: 8px;
-            -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-            color: #3c4043;
-            cursor: pointer;
-            font-family: 'Google Sans', 'Roboto', arial, sans-serif;
-            font-size: 16px;
-            font-weight: 500;
-            height: 48px;
-            letter-spacing: 0.25px;
-            outline: none;
-            overflow: hidden;
-            padding: 0 16px;
-            position: relative;
-            text-align: center;
-            -webkit-transition: background-color .218s, border-color .218s, box-shadow .218s;
-            transition: background-color .218s, border-color .218s, box-shadow .218s;
-            vertical-align: middle;
-            white-space: nowrap;
-            width: auto;
-            max-width: 320px;
-            min-width: 280px;
-          }
-
-          .gsi-material-button .gsi-material-button-icon {
-            height: 20px;
-            margin-right: 12px;
-            min-width: 20px;
-            width: 20px;
-          }
-
-          .gsi-material-button .gsi-material-button-content-wrapper {
-            -webkit-align-items: center;
-            align-items: center;
-            display: flex;
-            -webkit-flex-direction: row;
-            flex-direction: row;
-            -webkit-flex-wrap: nowrap;
-            flex-wrap: nowrap;
-            height: 100%;
-            justify-content: center;
-            position: relative;
-            width: 100%;
-          }
-
-          .gsi-material-button .gsi-material-button-contents {
-            -webkit-flex-grow: 1;
-            flex-grow: 1;
-            font-family: 'Google Sans', 'Roboto', arial, sans-serif;
-            font-weight: 500;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            vertical-align: top;
-          }
-
-          .gsi-material-button .gsi-material-button-state {
-            -webkit-transition: opacity .218s;
-            transition: opacity .218s;
-            bottom: 0;
-            left: 0;
-            opacity: 0;
-            position: absolute;
-            right: 0;
-            top: 0;
-          }
-
-          .gsi-material-button:disabled {
-            cursor: default;
-            background-color: #ffffff61;
-            border-color: #1f1f1f1f;
-          }
-
-          .gsi-material-button:disabled .gsi-material-button-contents {
-            opacity: 38%;
-          }
-
-          .gsi-material-button:disabled .gsi-material-button-icon {
-            opacity: 38%;
-          }
-
-          .gsi-material-button:not(:disabled):active .gsi-material-button-state, 
-          .gsi-material-button:not(:disabled):focus .gsi-material-button-state {
-            background-color: #303030;
-            opacity: 12%;
-          }
-
-          .gsi-material-button:not(:disabled):hover {
-            -webkit-box-shadow: 0 2px 4px 0 rgba(60, 64, 67, .30), 0 1px 6px 0 rgba(60, 64, 67, .15);
-            box-shadow: 0 2px 4px 0 rgba(60, 64, 67, .30), 0 1px 6px 0 rgba(60, 64, 67, .15);
-            border-color: #dadce0;
-          }
-
-          .gsi-material-button:not(:disabled):hover .gsi-material-button-state {
-            background-color: #303030;
-            opacity: 8%;
-          }
-
-          .gsi-material-button:not(:disabled):focus {
-            border-color: #4285f4;
-            outline: 2px solid transparent;
-            outline-offset: 2px;
-          }
-
-          @keyframes fadeInUp {
-            from {
-              opacity: 0;
-              transform: translateY(30px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-
-          .fade-in-up {
-            animation: fadeInUp 0.6s ease-out;
-          }
-
-          .logo-container {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            margin-bottom: 40px;
-          }
-        `}</style>
-        
-        {/* Logo/Brand Section */}
-        <div className="logo-container fade-in-up">
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ 
-              fontSize: '48px', 
-              marginBottom: '10px',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              fontWeight: 'bold'
-            }}>
-              📧
-            </div>
-            <h1 style={{ 
-              fontSize: '32px', 
-              fontWeight: '700', 
-              margin: '0',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Header */}
+      <header className="bg-indigo-700 shadow-sm">
+        <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center">
+            <span className="font-bold text-2xl text-white">
               DigiMail
-            </h1>
+            </span>
+          </div>
+          <div className="hidden md:flex items-center space-x-6 text-gray-200">
+            <a href="#about" className="hover:text-white transition-colors">About</a>
+            <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
+          </div>
+          <button 
+            onClick={() => signIn("google", { callbackUrl: "/" })}
+            className="hidden md:block bg-indigo-400 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+          >
+            Get Started
+          </button>
+        </nav>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-grow flex items-center bg-white min-h-screen">
+        <div className="container mx-auto px-6 py-16">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="text-left">
+              <h1 className="text-5xl font-bold text-gray-800 mb-4 leading-tight">
+                Intelligent Email Analysis,
+                <br />
+                <span className="text-purple-600">
+                  Simplified.
+                </span>
+              </h1>
+              <p className="text-gray-500 mb-8 text-lg">
+                Harness the power of AI to summarize, categorize, and generate smart replies for your emails, giving you back time and focus.
+              </p>
+              <button 
+                onClick={() => signIn("google", { callbackUrl: "/" })}
+                className="bg-gradient-to-br from-green-400 to-green-500 hover:shadow-xl text-white font-bold py-3 px-8 rounded-lg transition-all text-lg shadow-lg shadow-green-400/40"
+              >
+                Sign In & Get Started
+              </button>
+            </div>
+            <div className="flex justify-center">
+              <svg className="w-80 h-80 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M8 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-2m-4-1v8m0 0l3-3m-3 3L9 8m-5 5h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 001.414 0l2.414-2.414a1 1 0 01.707-.293H21" />
+              </svg>
+            </div>
           </div>
         </div>
+      </main>
 
-        {/* Main Content */}
-        <div className="fade-in-up" style={{ animationDelay: '0.2s' }}>
-          <div style={{ 
-            background: 'white', 
-            borderRadius: '16px', 
-            padding: '48px 40px',
-            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-            textAlign: 'center',
-            maxWidth: '400px',
-            width: '100%'
-          }}>
-            <h2 style={{ 
-              fontSize: '28px', 
-              fontWeight: '600', 
-              color: '#1a202c',
-              marginBottom: '8px',
-              margin: '0 0 8px 0'
-            }}>
-              Welcome Back
-            </h2>
-            <p style={{ 
-              color: '#718096', 
-              fontSize: '16px',
-              marginBottom: '32px',
-              margin: '0 0 32px 0'
-            }}>
-              Sign in to access your AI-powered email dashboard
-            </p>
-            
-            <button 
-              className="gsi-material-button"
-              onClick={() => signIn("google", { callbackUrl: "/" })}
-              style={{ width: '100%' }}
-            >
-              <div className="gsi-material-button-state"></div>
-              <div className="gsi-material-button-content-wrapper">
-                <div className="gsi-material-button-icon">
-                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" xmlnsXlink="http://www.w3.org/1999/xlink" style={{display: 'block'}}>
-                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-                    <path fill="none" d="M0 0h48v48H0z"></path>
-                  </svg>
-                </div>
-                <span className="gsi-material-button-contents">Continue with Google</span>
-              </div>
-            </button>
-            
-            <div style={{ 
-              marginTop: '24px', 
-              padding: '16px',
-              backgroundColor: '#f7fafc',
-              borderRadius: '8px',
-              border: '1px solid #e2e8f0'
-            }}>
-              <p style={{ 
-                fontSize: '14px', 
-                color: '#4a5568',
-                margin: '0',
-                lineHeight: '1.5'
-              }}>
-                🔒 Your data is secure and private. We only access your email metadata to provide AI-powered insights.
+      <section id="about" className="bg-gray-100 py-20">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">About DigiMail</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            DigiMail is a powerful tool that leverages artificial intelligence to help you manage your inbox more effectively. From summarizing long email threads to generating context-aware smart replies, our goal is to save you time and keep you focused on what matters most.
+          </p>
+        </div>
+      </section>
+
+      <section id="faq" className="bg-white py-20">
+        <div className="container mx-auto px-6">
+          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Frequently Asked Questions</h2>
+          <div className="max-w-2xl mx-auto">
+            <div className="mb-6">
+              <h3 className="font-semibold text-lg text-gray-800 mb-2">Is my data secure?</h3>
+              <p className="text-gray-600">
+                Absolutely. We use Google's secure authentication and APIs to access your emails. Your data is encrypted in transit and at rest, and we never store your email content on our servers.
+              </p>
+            </div>
+            <div className="mb-6">
+              <h3 className="font-semibold text-lg text-gray-800 mb-2">How does the AI work?</h3>
+              <p className="text-gray-600">
+                We use Google's powerful Gemini model to analyze your emails. This allows us to provide high-quality summaries and relevant smart replies tailored to the content of each message.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg text-gray-800 mb-2">Can I use this with other email providers?</h3>
+              <p className="text-gray-600">
+                Currently, DigiMail only supports Gmail accounts. We are working on expanding to other providers in the future.
               </p>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Footer */}
-        <div className="fade-in-up" style={{ 
-          marginTop: '40px', 
-          textAlign: 'center',
-          animationDelay: '0.4s'
-        }}>
-          <p style={{ 
-            color: '#718096', 
-            fontSize: '14px',
-            margin: '0'
-          }}>
-            Powered by AI • Built with ❤️
-          </p>
+      {/* Footer */}
+      <footer className="bg-gray-800 py-8">
+        <div className="container mx-auto px-6">
+          {/* Footer content can be added here later */}
         </div>
+      </footer>
+
+      {/* Sign-in button for mobile */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
+        <button
+          onClick={() => signIn("google", { callbackUrl: "/" })}
+          className="w-full bg-gradient-to-br from-green-400 to-green-500 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+        >
+          Sign In with Google
+        </button>
       </div>
+    </div>
   );
 }

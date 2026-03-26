@@ -8,11 +8,30 @@ import jsPDF from 'jspdf';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilePdf } from '@fortawesome/free-regular-svg-icons';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Menu, Copy, Download, Send, Bot, User, LogOut, Inbox, AlertCircle, Mail } from "lucide-react";
+import clsx from "clsx";
 
 export default function Home() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [copied, setcopy] = useState(false);
+  const [smartReplies, setSmartReplies] = useState({});
+  const [isReplying, setIsReplying] = useState(null);
+  const [replyStatus, setReplyStatus] = useState({});
+  const [selectedEmail, setSelectedEmail] = useState(null);
 
   const fech_email = async () => {
     const today = new Date().toISOString().split('T')[0];
@@ -74,6 +93,68 @@ export default function Home() {
   };
 
   
+  const fetchSmartReplies = async (email) => {
+    setIsReplying(email.id);
+    try {
+      const response = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: `From: ${email.from}\nSubject: ${email.subject}\n\n${email.snippet}`,
+          requestType: 'smart-reply'
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get smart replies.');
+      }
+
+      const data = await response.json();
+      setSmartReplies(prev => ({ ...prev, [email.id]: data.replies }));
+    } catch (error) {
+      console.error("Smart Reply Error:", error);
+      // Optionally, set an error state to show in the UI
+    } finally {
+      setIsReplying(null);
+    }
+  };
+
+  const handleSendReply = async (email, replyBody) => {
+    setReplyStatus({ ...replyStatus, [email.id]: 'sending' });
+    try {
+      const response = await fetch('/api/emails/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: email.from,
+          subject: `Re: ${email.subject}`,
+          body: replyBody,
+          threadId: email.threadId
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send reply.');
+      }
+
+      setReplyStatus({ ...replyStatus, [email.id]: 'sent' });
+      setTimeout(() => {
+        // Hide the smart replies for this email after sending
+        setSmartReplies(prev => {
+          const newReplies = { ...prev };
+          delete newReplies[email.id];
+          return newReplies;
+        });
+        setReplyStatus({ ...replyStatus, [email.id]: null });
+      }, 2000);
+
+    } catch (error) {
+      console.error("Send Reply Error:", error);
+      setReplyStatus({ ...replyStatus, [email.id]: 'error' });
+    }
+  };
+
+  
   const { data: emailSummary, isLoading, isFetching, error, refetch } = useQuery({
     queryKey: ['email-summary'], 
     queryFn: fetchAndSummarizeEmails,
@@ -128,146 +209,219 @@ export default function Home() {
     }
   }, [status, router]);
 
-  if (!session) {
-    return null;
+  if (status === "loading" || !session) {
+    return (
+      <div className="min-h-screen w-screen flex justify-center items-center bg-gray-50">
+        <DotLottieReact src="/Loading Dots Blue.json" loop autoplay />
+      </div>
+    );
   }
 
   return (
-    <div className={`w-screen flex flex-col justify-center items-center px-4 py-10 bg-gradient-to-br from-indigo-500 to-purple-600 ${emailSummary?.summary? 'h-full' : 'h-screen'}`}>
-      <div className="max-w-4xl mx-auto  my-0">
-        <div className=" mb-7.5 text-center bg-white p-7 rounded-3xl shadow-2xl animate-fade-in-up">
-          <div className=" max-sm:text-3xl text-5xl mb-4">
-            📧
+    <div className="min-h-screen w-screen bg-gray-50 flex flex-col">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-30">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Left side: Brand and Nav */}
+            <div className="flex items-center space-x-4">
+              <span className="font-bold text-2xl text-indigo-600">
+                DigiMail
+              </span>
+            </div>
+
+            {/* Right side: User menu */}
+            <div className="flex items-center space-x-4">
+              <span className="hidden sm:block text-sm text-gray-600">Welcome, {session.user.name}</span>
+              <Avatar>
+                <AvatarImage src={session?.user?.image} />
+                <AvatarFallback>{session.user.name?.charAt(0) || 'U'}</AvatarFallback>
+              </Avatar>
+              <Button variant="ghost" size="icon" onClick={() => signOut({ callbackUrl: '/signin' })}>
+                <LogOut className="h-5 w-5 text-gray-500" />
+              </Button>
+            </div>
           </div>
-          <h1 className="lg:w-[840px] p-1 max-sm:text-xl mb-1.5 text-3xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
-            DigiMail Dashboard
-          </h1>
-          <div className="flex items-center justify-center my-3">
-            <Avatar className='scale-150'>
-              <AvatarImage src={session?.user?.image} />
-              <AvatarFallback>N.A</AvatarFallback>
-            </Avatar>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          {/* Left Column: Email List */}
+          <div className="lg:col-span-1">
+            <Card className="h-full">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Inbox className="mr-2 h-5 w-5" />
+                  Today's Inbox
+                </CardTitle>
+                <CardDescription>
+                  {emails?.messages?.length || 0} new messages
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-[45vh] lg:h-[60vh] pr-4">
+                  {email_loading && <p>Loading emails...</p>}
+                  {email_error && <p className="text-red-500">{email_error.message}</p>}
+                  {emails?.messages && emails.messages.map((email) => (
+                    <Sheet key={email.id} onOpenChange={(isOpen) => !isOpen && setSelectedEmail(null)}>
+                      <SheetTrigger asChild>
+                        <div
+                          className="mb-2"
+                          onClick={() => setSelectedEmail(email)}
+                        >
+                          <div className="p-3 rounded-lg hover:bg-gray-100 cursor-pointer">
+                            <p className="font-semibold text-sm truncate">{email.from}</p>
+                            <p className="text-xs text-gray-600 truncate">{email.subject}</p>
+                          </div>
+                          <Separator />
+                        </div>
+                      </SheetTrigger>
+                    </Sheet>
+                  ))}
+                </ScrollArea>
+              </CardContent>
+            </Card>
           </div>
-          <p className="mb-1 text-gray-600 text-xl">
-            Welcome back, {session.user.name}! 👋
-          </p>
-          {session.user.email === 'maryamsajid283@gmail.com' && 
-              (<div className="font-bold text-xl m-1">
-                <p>💖💖💖Hi Babyyy💖💖💖</p>
-                Some Roses for you too 🌹🌹🌹🌹🌹
+
+          {/* Right Column: Summary and Actions */}
+          <div className="lg:col-span-2">
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle>Daily Email Intelligence</CardTitle>
+                <CardDescription>Get instant insights from today's emails powered by advanced AI.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button onClick={summarizeTodaysEmails} disabled={isFetching || !emails?.messages?.length}>
+                  {isFetching ? (
+                    <>
+                      <DotLottieReact src="/Loading Dots Blue.json" className="w-12 h-12" loop autoplay />
+                      Analyzing...
+                    </>
+                  ) : "Analyze Today's Emails"}
+                </Button>
+              </CardContent>
+            </Card>
+
+            {error && (
+              <Card className="mb-8 bg-red-50 border-red-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center text-red-800">
+                    <AlertCircle className="mr-2 h-5 w-5" />
+                    Error
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-red-700">
+                  {error.message}
+                </CardContent>
+              </Card>
+            )}
+
+            {emailSummary?.summary && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Bot className="mr-2 h-5 w-5" />
+                    Today's Summary
+                  </CardTitle>
+                  <div className="flex gap-2 pt-2">
+                    <Button variant="outline" size="sm" onClick={copy}>
+                      <Copy className="mr-2 h-4 w-4" /> {copied ? 'Copied!' : 'Copy'}
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={downloadPdf}>
+                      <Download className="mr-2 h-4 w-4" /> PDF
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="whitespace-pre-wrap text-gray-700 leading-relaxed">
+                  {emailSummary.summary}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+      </main>
+
+      {selectedEmail && (
+        <Sheet open={!!selectedEmail} onOpenChange={(isOpen) => !isOpen && setSelectedEmail(null)}>
+          <SheetContent className="w-full sm:max-w-2xl flex flex-col p-0 h-[100dvh] sm:h-full z-50">
+            <SheetHeader className="p-4 sm:p-6 border-b border-gray-100 flex-shrink-0">
+              <SheetTitle className="truncate text-base sm:text-lg pr-8">{selectedEmail.subject}</SheetTitle>
+              <SheetDescription className="text-xs sm:text-sm truncate">
+                From: {selectedEmail.from}
+              </SheetDescription>
+            </SheetHeader>
+            <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-6 pb-24 sm:pb-8">
+              <div className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed mb-8 bg-white border border-gray-100 rounded-lg p-4 shadow-sm">
+                {selectedEmail.snippet}
               </div>
-              )
-            }     
-          <button
-            onClick={() => signOut({ callbackUrl: '/signin' })}
-            className="mt-1 px-5 py-2.5 bg-red-400 text-white border-none rounded-lg cursor-pointer hover:bg-red-500 text-md font-medium transition-all duration-300 ease-in shadow-md shadow-red-400/30"
-          >
-            Sign Out
-          </button>
-        </div>
-
-        <div className=" max-sm:text-xl text-center  bg-white rounded-3xl px-10 py-12.5 shadow-2xl animate-fade-in-up-delay-200">
-          <div className="mb-7.5">
-            <h2 className="max-sm:text-xl text-3xl font-bold text-gray-800 mb-2.5">
-              Daily Email Intelligence
-            </h2>
-            <p className="max-sm:text-md text-gray-500 m-0 text-l">
-              Get instant insights from today's emails powered by advanced AI
-            </p>
-          </div>
-
-          <button
-            onClick={summarizeTodaysEmails}
-            disabled={isFetching}
-            className={`${isFetching ? 'hidden' : null} max-sm:text-md px-10 py-5 font-bold text-lg text-white border-none rounded-lg min-w-[280px] transition-transform duration-300 ease-in ${isFetching
-              ? 'cursor-not-allowed'
-              : 'bg-gradient-to-br from-green-400 to-green-500 cursor-pointer shadow-lg shadow-green-400/40 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-green-400/50'
-              }`}
-          >
-            Analyze Today's Emails
-          </button>
-          <div className={`${isFetching ? null : 'hidden'} flex justify-center items-center h-[68px]`}><DotLottieReact src="/0dqQkJGtm9.json" className="scale-50" loop autoplay />
-          </div>
-        </div>
-
-        {emailSummary?.summary && (
-          <div className=" flex flex-col items-center mt-7.5 bg-white rounded-2xl px-0.5 py-7 shadow-2xl animate-fade-in-up-delay-400">
-            <div className="w-[90%] flex items-center mb-5">
-              <span className="text-xl mr-3">🤖</span>
-              <h3 className="m-0 text-gray-800 text-md font-semibold">
-                Today's Email Summary
-              </h3>
-            </div>
-            <div className="w-[90%] self-center  whitespace-pre-wrap leading-7 text-gray-600 text-base bg-gray-50 p-1 rounded-xl border border-gray-200">
-              {emailSummary.summary}
-            </div>
-            <div className="w-[90%] flex gap-3">
-              <button className="max-sm:text-sm bg-[#F40F02] text-white rounded-md mt-3 px-3 h-[40px] cursor-pointer hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2" onClick={downloadPdf}>
-                Download as PDF
-                <FontAwesomeIcon className="text-xl" icon={faFilePdf} />
-              </button>
-              <button className={`${copied ? 'bg-white text-black' : 'bg-black text-white'} rounded-md px-6 mt-3 h-[40px] cursor-pointer hover:-translate-y-0.5 transition-transform duration-200`} onClick={copy}>{copied ? <DotLottieReact src="/Success Check.json" autoplay /> : 'Copy Text'}</button>
-            </div>
-          </div>
-        )}
-
-        {error && (
-          <div className="mt-7.5 bg-red-50 border border-red-200 rounded-2xl p-7.5 shadow-2xl">
-            <div className="flex items-center mb-5">
-              <span className="text-2xl mr-3">❌</span>
-              <h3 className="m-0 text-red-800 text-xl font-semibold">
-                Error
-              </h3>
-            </div>
-            <div className="text-red-600 text-base">
-              {error.message}
-            </div>
-          </div>
-        )}
-
-        {emailSummary?.emails && emailSummary.emails.length > 0 && emailSummary.summary && (
-          <div className="max-sm:w-[360px] flex flex-col items-center mt-7.5 bg-white rounded-2xl px-0.5 py-7 shadow-2xl animate-fade-in-up-delay-600">
-            <div className="w-[90%] flex items-center mb-6">
-              <span className="text-2xl mr-3">📨</span>
-              <h3 className="m-0 text-gray-800 text-xl font-semibold">
-                Today's Emails ({emailSummary.emails.length})
-              </h3>
-            </div>
-            <div className="w-[100%] max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
-              {emailSummary.emails.map((email, index) => (
-                <div
-                  key={email.id}
-                  className="p-2.5 m-2 border border-gray-200 rounded-xl bg-gray-50 shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:bg-white animate-fade-in-up"
-                  style={{ animationDelay: `${0.8 + index * 0.1}s` }}
+              <div className="space-y-4">
+                <h4 className="font-semibold text-sm sm:text-md">Actions</h4>
+                <Button
+                  onClick={() => fetchSmartReplies(selectedEmail)}
+                  disabled={isReplying === selectedEmail.id}
+                  className="w-full h-12"
                 >
-                  <div className="font-semibold mb-2.5 text-gray-800 text-base">
-                    {email.subject}
-                  </div>
-                  <div className="text-sm text-gray-500 mb-2 flex items-center text-wrap">
-                    <span className="mr-2">👤</span>
-                    <strong>From:</strong>&nbsp;{email.from}
-                  </div>
-                  <div className="text-xs text-gray-400 mb-3 flex items-center">
-                    <span className="mr-2">📅</span>
-                    {new Date(email.date).toLocaleDateString('en-US', {
-                      weekday: 'short',
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric'
-                    })}
-                  </div>
-                  {email.snippet && (
-                    <div className="text-sm text-gray-600 italic bg-white p-3 rounded-lg border border-gray-200">
-                      {email.snippet.substring(0, 150)}...
-                    </div>
+                  {isReplying === selectedEmail.id ? (
+                    <>
+                      <DotLottieReact src="/Loading Dots Blue.json" className="w-12 h-12" loop autoplay />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Bot className="mr-2 h-5 w-5" /> Generate Smart Replies
+                    </>
                   )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+                </Button>
 
-      </div>
+                {smartReplies[selectedEmail.id] && (
+                  <div className="space-y-3 pt-4 border-t border-gray-100">
+                    <h5 className="font-semibold text-sm text-gray-800">Suggestions:</h5>
+                    {smartReplies[selectedEmail.id].map((reply, index) => (
+                      <Card key={index} className="bg-white border-blue-100 shadow-sm transition-all hover:shadow-md">
+                        <CardContent className="p-4">
+                          <p className="text-sm text-gray-700 mb-3">{reply}</p>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full sm:w-auto text-indigo-600 border-indigo-100 hover:bg-indigo-50"
+                            onClick={() => handleSendReply(selectedEmail, reply)}
+                            disabled={replyStatus[selectedEmail.id] === 'sending' || replyStatus[selectedEmail.id] === 'sent'}
+                          >
+                            {replyStatus[selectedEmail.id] === 'sending' ? (
+                              <>
+                                <Send className="mr-2 h-4 w-4 animate-pulse" /> Sending...
+                              </>
+                            ) : replyStatus[selectedEmail.id] === 'sent' ? (
+                              <>
+                                <Send className="mr-2 h-4 w-4" /> Sent!
+                              </>
+                            ) : (
+                              <>
+                                <Send className="mr-2 h-4 w-4" /> Send this reply
+                              </>
+                            )}
+                          </Button>
+                          {replyStatus[selectedEmail.id] === 'error' && <p className="text-xs text-red-500 mt-2 text-center">Failed to send.</p>}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
+
+      {/* Footer */}
+      <footer className="bg-gray-800 py-4 mt-auto">
+        <div className="container mx-auto px-6 text-center text-sm text-gray-400">
+          <p>&copy; {new Date().getFullYear()} DigiMail. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

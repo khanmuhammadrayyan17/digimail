@@ -14,10 +14,10 @@ const genAI = new GoogleGenerativeAI(apiKey);
 
 export async function POST(req) {
   try {
-    // Get the prompt from request body
+    // Get data from request body
     const data = await req.json();
-    const { prompt } = data;
-    
+    const { prompt, requestType } = data; // requestType can be 'summary' or 'smart-reply'
+
     if (!prompt) {
       return NextResponse.json(
         { error: 'Prompt is required' },
@@ -25,27 +25,53 @@ export async function POST(req) {
       );
     }
 
+    let finalPrompt;
+    if (requestType === 'smart-reply') {
+      finalPrompt = `Based on the following email, generate three distinct, concise, and relevant smart replies. Return the replies as a JSON object with a "replies" key containing an array of strings (e.g., {"replies": ["Sounds good!", "I'll get back to you.", "Can you clarify?"]}).\n\nEmail: "${prompt}"`;
+    } else {
+      // Default to summarization
+      finalPrompt = prompt;
+    }
+
     // Log the incoming prompt
-    console.log('Received prompt:', prompt);
+    console.log('Received prompt:', finalPrompt);
 
     // Initialize the model with generation config
     const model = genAI.getGenerativeModel({
-      model: 'models/gemini-2.0-flash-lite',  // Using the Flash-Lite model for higher rate limits
+      model: 'gemini-2.5-flash-lite', 
       generationConfig: {
         temperature: 0.7,
         maxOutputTokens: 2048,
       }
     });
 
-    // Generate the content (wrap prompt in array as required by the API)
-    const result = await model.generateContent([prompt]);
+    // Generate the content
+    const result = await model.generateContent(finalPrompt);
     const response = await result.response;
     const text = response.text();
 
     // Log the response for debugging
     console.log('Generated response:', text);
 
-    return NextResponse.json({ result: text })
+    if (requestType === 'smart-reply') {
+      try {
+        // The response might be wrapped in markdown, so we clean it.
+        let cleanedText = text;
+        if (cleanedText.startsWith('```json')) {
+          cleanedText = cleanedText.substring(7, cleanedText.length - 3).trim();
+        } else if (cleanedText.startsWith('```')) {
+            cleanedText = cleanedText.substring(3, cleanedText.length - 3).trim();
+        }
+        
+        const parsedReplies = JSON.parse(cleanedText);
+        return NextResponse.json({ replies: parsedReplies.replies || [] });
+      } catch (e) {
+        console.error('Failed to parse smart replies JSON:', e);
+        return NextResponse.json({ error: 'Failed to generate valid smart replies.' }, { status: 500 });
+      }
+    }
+
+    return NextResponse.json({ result: text });
   } catch (error) {
     console.error('Gemini API error:', error);
     return NextResponse.json(
