@@ -6,24 +6,28 @@ A modern email management application built with Next.js that integrates with Gm
 
 - **Gmail Integration**: Secure OAuth authentication with Gmail
 - **Email Viewing**: Browse and read emails from your Gmail account
-- **AI-Powered Analysis**: Email analysis and insights using Google Gemini AI
+- **Email Summarization**: AI-powered daily email summaries organized by priority
+- **Smart Replies**: Intelligent reply suggestions powered by Gemini AI
+- **One-Click Email Sending**: Generate and send AI-suggested replies directly
 - **PDF Export**: Generate PDF reports of email data
 - **Responsive Design**: Modern UI built with Tailwind CSS and shadcn/ui components
+- **Mobile-Friendly**: Fully responsive dashboard and email panel
 - **Real-time Updates**: React Query for efficient data fetching and caching
 - **Secure Authentication**: NextAuth.js with Google OAuth provider
 
 ## 🚀 Technology Stack
 
-- **Framework**: Next.js 15.4.4 with App Router
+- **Framework**: Next.js 15.5.14 with App Router and Turbopack
 - **React**: 19.1.0 with React Hooks
-- **Authentication**: NextAuth.js with Google OAuth
-- **Styling**: Tailwind CSS with shadcn/ui components
-- **AI Integration**: Google Generative AI (Gemini)
-- **Data Fetching**: TanStack React Query
+- **Authentication**: NextAuth.js with Google OAuth (supports Gmail read and compose scopes)
+- **Styling**: Tailwind CSS v4 with shadcn/ui components
+- **AI Integration**: Google Generative AI (Gemini 2.5 Flash Lite) for email analysis and smart replies
+- **Data Fetching**: TanStack React Query for efficient caching
 - **PDF Generation**: jsPDF with AutoTable
 - **Icons**: Lucide React & Font Awesome
 - **Animations**: Lottie animations
 - **Form Handling**: React Hook Form
+- **Deployment**: Vercel
 
 ## 📋 Prerequisites
 
@@ -128,28 +132,32 @@ digimail/
 - `GET /api/emails` - Fetch emails from Gmail
   - Query parameters: `maxResults`, `pageToken`, `q` (search query)
 - `GET /api/emails/[id]` - Fetch specific email details
+- `POST /api/emails/send` - Send email replies via Gmail API
+  - Body: `{ "to": "email@example.com", "subject": "...", "body": "...", "threadId": "..." }`
 
 ### AI Integration
 - `POST /api/gemini` - Generate AI responses using Gemini
-  - Body: `{ "prompt": "your prompt here" }`
+  - Body: `{ "prompt": "your prompt here", "requestType": "summary" | "smart-reply" }`
 
 ## 🔐 Environment Variables
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `NEXTAUTH_URL` | Your app's URL (http://localhost:3000 for development) | Yes |
-| `NEXTAUTH_SECRET` | Secret for NextAuth.js session encryption | Yes |
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID | Yes |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | Yes |
-| `GEMINI_API_KEY` | Google Gemini AI API key | Yes |
+| `NEXTAUTH_URL` | Your app's URL (http://localhost:3000 for development, https://yourdomain.com for production) | Yes |
+| `NEXTAUTH_SECRET` | Secret for NextAuth.js session encryption (generate with: `openssl rand -base64 32`) | Yes |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID from Google Cloud Console | Yes |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret from Google Cloud Console | Yes |
+| `GEMINI_API_KEY` | Google Gemini AI API key from Google AI Studio | Yes |
 
 ## 🎯 Usage
 
-1. **Sign In**: Use the Google OAuth sign-in to authenticate with your Gmail account
-2. **View Emails**: Browse your recent emails in a clean, modern interface
-3. **AI Analysis**: Use AI features to analyze email content and get insights
-4. **Export Data**: Generate PDF reports of your email data
-5. **Secure Access**: All data is processed securely with proper authentication
+1. **Sign In**: Use the Google OAuth sign-in to authenticate with your Gmail account (requires Gmail read and compose permissions)
+2. **View Emails**: Browse your daily emails in an organized inbox
+3. **Get Email Summaries**: Click "Analyze Today's Emails" to get AI-powered summaries organized by priority and topics
+4. **Generate Smart Replies**: Select an email and click "Generate Smart Replies" to get AI-suggested responses
+5. **Send Replies**: Review suggestions and send them directly or customize before sending
+6. **Export Data**: Generate PDF reports of your email summaries
+7. **Secure Access**: All data is processed securely with proper OAuth authentication and token refresh
 
 ## 🚀 Deployment
 
